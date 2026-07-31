@@ -1,0 +1,53 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  password  String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BlogPost {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  slug             String   @unique
+  content          String   
+  featuredImage    String?
+  metaTitle        String?
+  metaDescription  String?
+  isPublished      Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model HomepageSettings {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  heroTitle       String
+  heroSubtitle    String?
+  description     String?
+  yearsExperience Int      @default(0)
+  successRate     Int      @default(0)
+  happyFamilies   Int      @default(0)
+  ivfSpecialists  Int      @default(0)
+  updatedAt       DateTime @updatedAt
+}
+
+model ContactEnquiry {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  phone     String
+  email     String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
