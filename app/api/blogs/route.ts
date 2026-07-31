@@ -9,7 +9,8 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
     const search = searchParams.get("search") || "";
-    const isPublishedParam = searchParams.get("isPublished");
+    const category = searchParams.get("category") || "";
+    const status = searchParams.get("status") || "";
 
     const skip = (page - 1) * limit;
 
@@ -19,13 +20,16 @@ export async function GET(request: Request) {
       where.OR = [
         { title: { contains: search } },
         { content: { contains: search } },
+        { excerpt: { contains: search } },
       ];
     }
 
-    if (isPublishedParam === "true") {
-      where.isPublished = true;
-    } else if (isPublishedParam === "false") {
-      where.isPublished = false;
+    if (category && category !== "All") {
+      where.category = category;
+    }
+
+    if (status && status !== "All") {
+      where.status = status;
     }
 
     const [posts, total] = await Promise.all([
@@ -65,10 +69,15 @@ export async function POST(request: Request) {
       title,
       slug,
       content,
+      excerpt,
       featuredImage,
       metaTitle,
       metaDescription,
-      isPublished,
+      metaKeywords,
+      author,
+      category,
+      tags,
+      status,
     } = body;
 
     if (!title || !slug || !content) {
@@ -95,10 +104,15 @@ export async function POST(request: Request) {
         title,
         slug,
         content,
+        excerpt: excerpt || content.substring(0, 160) + "...",
         featuredImage: featuredImage || "/assets/images/banner.jpg",
         metaTitle: metaTitle || title,
-        metaDescription: metaDescription || content.substring(0, 160),
-        isPublished: isPublished === undefined ? true : Boolean(isPublished),
+        metaDescription: metaDescription || excerpt || content.substring(0, 160),
+        metaKeywords: metaKeywords || "IVF Jaipur, Kulki IVF, fertility",
+        author: author || "Dr. Asha Sushawat",
+        category: category || "Fertility",
+        tags: tags || "IVF, Fertility, Jaipur",
+        status: status || "PUBLISHED",
       },
     });
 

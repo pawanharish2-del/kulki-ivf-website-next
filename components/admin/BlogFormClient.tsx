@@ -10,10 +10,15 @@ interface PostData {
   title: string;
   slug: string;
   content: string;
+  excerpt?: string;
   featuredImage?: string;
   metaTitle?: string;
   metaDescription?: string;
-  isPublished: boolean;
+  metaKeywords?: string;
+  author: string;
+  category: string;
+  tags?: string;
+  status: string;
 }
 
 export default function BlogFormClient({ initialData, isEdit = false }: { initialData?: PostData; isEdit?: boolean }) {
@@ -22,10 +27,15 @@ export default function BlogFormClient({ initialData, isEdit = false }: { initia
       title: "",
       slug: "",
       content: "<h3>Introduction</h3>\n<p>Write your medical article content here...</p>",
+      excerpt: "",
       featuredImage: "/assets/images/blog1.webp",
       metaTitle: "",
       metaDescription: "",
-      isPublished: true,
+      metaKeywords: "IVF Jaipur, Kulki IVF, fertility treatment",
+      author: "Dr. Asha Sushawat",
+      category: "Clinic News",
+      tags: "IVF, Fertility",
+      status: "PUBLISHED",
     }
   );
   const [activeTab, setActiveTab] = useState<"write" | "preview">("write");
@@ -33,6 +43,8 @@ export default function BlogFormClient({ initialData, isEdit = false }: { initia
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const categories = ["Clinic News", "Guide", "Treatment Cost", "Fertility Facts", "Preservation"];
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
@@ -128,12 +140,12 @@ export default function BlogFormClient({ initialData, isEdit = false }: { initia
 
         <div className="flex items-center gap-3">
           <select
-            value={formData.isPublished ? "true" : "false"}
-            onChange={(e) => setFormData((prev) => ({ ...prev, isPublished: e.target.value === "true" }))}
+            value={formData.status}
+            onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value }))}
             className="bg-white border border-[#fde2e8] rounded-xl px-4 py-2.5 text-sm font-bold text-[#802336] focus:outline-none focus:border-[#c44d68] shadow-sm cursor-pointer"
           >
-            <option value="true">Published Live</option>
-            <option value="false">Save as Draft</option>
+            <option value="PUBLISHED">Published Live</option>
+            <option value="DRAFT">Save as Draft</option>
           </select>
 
           <button
@@ -197,6 +209,19 @@ export default function BlogFormClient({ initialData, isEdit = false }: { initia
                   className="flex-1 bg-transparent px-3 py-3 text-sm font-mono text-[#802336] focus:outline-none font-medium"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 font-display">
+                Article Excerpt / Summary
+              </label>
+              <textarea
+                rows={2}
+                value={formData.excerpt || ""}
+                onChange={(e) => setFormData((prev) => ({ ...prev, excerpt: e.target.value }))}
+                placeholder="Brief summary of the article for blog cards and social sharing..."
+                className="w-full bg-[#fff0f3]/50 border border-[#fde2e8] rounded-xl p-3.5 text-sm text-[#802336] placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#c44d68] transition-all shadow-sm"
+              />
             </div>
           </div>
 
@@ -280,6 +305,17 @@ export default function BlogFormClient({ initialData, isEdit = false }: { initia
                 className="w-full bg-[#fff0f3]/50 border border-[#fde2e8] rounded-xl p-3 text-xs text-[#802336] focus:outline-none focus:bg-white focus:border-[#c44d68] transition-all font-medium shadow-sm"
               />
             </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5 font-display">Meta Keywords</label>
+              <input
+                type="text"
+                value={formData.metaKeywords || ""}
+                onChange={(e) => setFormData((prev) => ({ ...prev, metaKeywords: e.target.value }))}
+                placeholder="IVF Jaipur, fertility clinic, ICSI cost"
+                className="w-full bg-[#fff0f3]/50 border border-[#fde2e8] rounded-xl px-3.5 py-2.5 text-xs text-[#802336] focus:outline-none focus:bg-white focus:border-[#c44d68] transition-all font-medium shadow-sm"
+              />
+            </div>
           </div>
 
           {/* Publishing Settings */}
@@ -287,6 +323,31 @@ export default function BlogFormClient({ initialData, isEdit = false }: { initia
             <h3 className="text-sm font-bold text-[#802336] uppercase tracking-wider pb-3 border-b border-[#fde2e8] font-display">
               Publishing Details
             </h3>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5 font-display">Category</label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
+                className="w-full bg-[#fff0f3]/50 border border-[#fde2e8] rounded-xl px-3.5 py-2.5 text-sm font-semibold text-[#802336] focus:outline-none focus:border-[#c44d68] shadow-sm cursor-pointer"
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5 font-display">Author</label>
+              <input
+                type="text"
+                value={formData.author}
+                onChange={(e) => setFormData((prev) => ({ ...prev, author: e.target.value }))}
+                className="w-full bg-[#fff0f3]/50 border border-[#fde2e8] rounded-xl px-3.5 py-2.5 text-sm font-semibold text-[#802336] focus:outline-none focus:bg-white focus:border-[#c44d68] transition-all shadow-sm"
+              />
+            </div>
 
             {/* Featured Image */}
             <div>

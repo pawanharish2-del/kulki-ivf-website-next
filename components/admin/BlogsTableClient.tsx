@@ -3,33 +3,36 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PlusCircle, Search, Edit3, Trash2, ExternalLink, AlertTriangle, Loader2 } from "lucide-react";
+import { PlusCircle, Search, Filter, Edit3, Trash2, ExternalLink, AlertTriangle, Loader2 } from "lucide-react";
 
 interface Post {
   id: any;
   title: string;
   slug: string;
   featuredImage?: string | null;
-  isPublished: boolean;
+  author: string;
+  category: string;
+  status: string;
   updatedAt: string;
 }
 
 export default function BlogsTableClient({ initialPosts }: { initialPosts: Post[] }) {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [search, setSearch] = useState("");
+  const [selectedCat, setSelectedCat] = useState("ALL");
   const [selectedStatus, setSelectedStatus] = useState("ALL");
   const [deleteModalId, setDeleteModalId] = useState<any | null>(null);
   const [deleting, setDeleting] = useState(false);
   const router = useRouter();
 
+  const categories = ["ALL", "Clinic News", "Guide", "Treatment Cost", "Fertility Facts", "Preservation"];
+
   const filteredPosts = posts.filter((p) => {
     const matchesSearch =
       p.title.toLowerCase().includes(search.toLowerCase()) || p.slug.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = 
-      selectedStatus === "ALL" 
-      || (selectedStatus === "PUBLISHED" && p.isPublished)
-      || (selectedStatus === "DRAFT" && !p.isPublished);
-    return matchesSearch && matchesStatus;
+    const matchesCat = selectedCat === "ALL" || p.category === selectedCat;
+    const matchesStatus = selectedStatus === "ALL" || p.status === selectedStatus;
+    return matchesSearch && matchesCat && matchesStatus;
   });
 
   const handleDelete = async (id: any) => {
@@ -85,6 +88,21 @@ export default function BlogsTableClient({ initialPosts }: { initialPosts: Post[
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-[#c44d68]/70" />
+            <select
+              value={selectedCat}
+              onChange={(e) => setSelectedCat(e.target.value)}
+              className="bg-[#fff0f3]/50 border border-[#fde2e8] rounded-xl px-3.5 py-2.5 text-sm text-[#802336] focus:outline-none focus:border-[#c44d68] font-semibold shadow-sm cursor-pointer"
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat === "ALL" ? "All Categories" : cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="flex rounded-xl bg-[#fff0f3]/70 p-1 border border-[#fde2e8] text-xs font-semibold shadow-inner">
             {["ALL", "PUBLISHED", "DRAFT"].map((status) => (
               <button
@@ -110,6 +128,8 @@ export default function BlogsTableClient({ initialPosts }: { initialPosts: Post[
             <thead>
               <tr className="bg-[#fff0f3]/60 border-b border-[#fde2e8] text-xs font-bold uppercase tracking-wider text-[#c44d68] font-display">
                 <th className="py-4 px-6">Article</th>
+                <th className="py-4 px-6">Category</th>
+                <th className="py-4 px-6">Author</th>
                 <th className="py-4 px-6">Status</th>
                 <th className="py-4 px-6">Last Updated</th>
                 <th className="py-4 px-6 text-right">Actions</th>
@@ -118,7 +138,7 @@ export default function BlogsTableClient({ initialPosts }: { initialPosts: Post[
             <tbody className="divide-y divide-[#fde2e8]/60 text-sm">
               {filteredPosts.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-12 text-center text-slate-400 font-medium">
+                  <td colSpan={6} className="py-12 text-center text-slate-400 font-medium">
                     No matching articles found. Try adjusting your search filters.
                   </td>
                 </tr>
@@ -144,25 +164,31 @@ export default function BlogsTableClient({ initialPosts }: { initialPosts: Post[
                       </div>
                     </td>
                     <td className="py-4 px-6">
+                      <span className="inline-block px-3 py-1 rounded-full bg-[#fff0f3] border border-[#fde2e8] text-[#802336] text-xs font-semibold">
+                        {post.category || "General"}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-[#802336] text-xs font-semibold">{post.author}</td>
+                    <td className="py-4 px-6">
                       <span
                         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
-                          post.isPublished
+                          post.status === "PUBLISHED"
                             ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                             : "bg-amber-50 text-amber-700 border border-amber-200"
                         }`}
                       >
                         <span
                           className={`w-1.5 h-1.5 rounded-full ${
-                            post.isPublished ? "bg-emerald-500" : "bg-amber-500"
+                            post.status === "PUBLISHED" ? "bg-emerald-500" : "bg-amber-500"
                           }`}
                         />
-                        {post.isPublished ? "PUBLISHED" : "DRAFT"}
+                        {post.status}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-slate-500 text-xs font-medium">{new Date(post.updatedAt).toLocaleDateString()}</td>
                     <td className="py-4 px-6 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {post.isPublished && (
+                        {post.status === "PUBLISHED" && (
                           <Link
                             href={`/blog/${post.slug}`}
                             target="_blank"

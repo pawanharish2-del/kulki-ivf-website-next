@@ -33,7 +33,7 @@ export default async function BlogListingPage() {
   try {
     posts = await prisma.blogPost.findMany({
       where: {
-        isPublished: true,
+        status: "PUBLISHED",
       },
       orderBy: {
         createdAt: "desc",
@@ -48,7 +48,9 @@ export default async function BlogListingPage() {
     id: p.id,
     title: p.title,
     slug: p.slug,
+    excerpt: p.excerpt,
     featuredImage: p.featuredImage,
+    category: p.category,
     createdAt: p.createdAt.toISOString(),
   }));
 

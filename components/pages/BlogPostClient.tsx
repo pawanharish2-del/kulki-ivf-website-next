@@ -9,7 +9,10 @@ interface Post {
   title: string;
   slug: string;
   content: string;
+  excerpt?: string | null;
   featuredImage?: string | null;
+  author: string;
+  category: string;
   createdAt: string;
 }
 
@@ -73,7 +76,7 @@ export default function BlogPostClient({ post }: BlogPostProps) {
       >
         <div className="container" style={{ textAlign: "center" }}>
           <span className="section-tag text-gold" style={{ color: "var(--gold)", letterSpacing: "2px", display: "inline-block", marginBottom: "12px" }}>
-            E-E-A-T CERTIFIED HEALTH INSIGHTS • FERTILITY
+            E-E-A-T CERTIFIED HEALTH INSIGHTS • {post.category.toUpperCase()}
           </span>
           <h1 className="page-hero-title rv active" style={{ maxWidth: "900px", margin: "0 auto 24px", fontSize: "2.8rem", lineHeight: 1.2, color: "#fff" }}>
             {post.title}
@@ -89,7 +92,7 @@ export default function BlogPostClient({ post }: BlogPostProps) {
             / <span>Article</span>
           </div>
           <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem", marginTop: "16px" }}>
-            By <strong style={{ color: "#fff" }}>Dr. Asha Sushawat</strong> • Published on {formattedDate}
+            By <strong style={{ color: "#fff" }}>{post.author}</strong> • Published on {formattedDate}
           </div>
         </div>
       </section>

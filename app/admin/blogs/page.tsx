@@ -19,7 +19,9 @@ export default async function AdminBlogsPage() {
     title: p.title,
     slug: p.slug,
     featuredImage: p.featuredImage,
-    isPublished: p.isPublished,
+    author: p.author,
+    category: p.category,
+    status: p.status,
     updatedAt: p.updatedAt.toISOString(),
   }));
 

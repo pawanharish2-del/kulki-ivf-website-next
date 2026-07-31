@@ -30,20 +30,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       title: post.metaTitle || `${post.title} | Kulki IVF Jaipur`,
-      description: post.metaDescription || `Read ${post.title} on the Kulki IVF Fertility & ART Centre blog.`,
-      keywords: `${post.slug}, IVF clinic Jaipur, fertility research Rajasthan`,
+      description: post.metaDescription || post.excerpt || `Read ${post.title} on the Kulki IVF Fertility & ART Centre blog.`,
+      keywords: post.metaKeywords || `${post.slug}, IVF clinic Jaipur, fertility research Rajasthan`,
       openGraph: {
         title: post.metaTitle || post.title,
-        description: post.metaDescription || undefined,
+        description: post.metaDescription || post.excerpt || undefined,
         type: "article",
         url: `https://kulkiivfgroup.com/blog/${post.slug}`,
         images: [post.featuredImage || "/assets/images/logo.jpg"],
         publishedTime: post.createdAt.toISOString(),
+        authors: [post.author],
       },
       twitter: {
         card: "summary_large_image",
         title: post.metaTitle || post.title,
-        description: post.metaDescription || undefined,
+        description: post.metaDescription || post.excerpt || undefined,
         images: [post.featuredImage || "/assets/images/logo.jpg"],
       },
       alternates: {
@@ -67,7 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
     console.error("Failed to fetch blog post:", err);
   }
 
-  if (!post || !post.isPublished) {
+  if (!post || post.status !== "PUBLISHED") {
     notFound();
   }
 
@@ -76,7 +77,10 @@ export default async function BlogPostPage({ params }: Props) {
     title: post.title,
     slug: post.slug,
     content: post.content,
+    excerpt: post.excerpt,
     featuredImage: post.featuredImage,
+    author: post.author,
+    category: post.category,
     createdAt: post.createdAt.toISOString(),
   };
 

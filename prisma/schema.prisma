@@ -18,36 +18,19 @@ model User {
 }
 
 model BlogPost {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
-  title            String
-  slug             String   @unique
-  content          String   
-  featuredImage    String?
-  metaTitle        String?
-  metaDescription  String?
-  isPublished      Boolean  @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-}
-
-model HomepageSettings {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  heroTitle       String
-  heroSubtitle    String?
-  description     String?
-  yearsExperience Int      @default(0)
-  successRate     Int      @default(0)
-  happyFamilies   Int      @default(0)
-  ivfSpecialists  Int      @default(0)
+  title           String
+  slug            String   @unique
+  content         String
+  excerpt         String?
+  featuredImage   String?
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  author          String   @default("Kulki IVF Specialist")
+  category        String   @default("Fertility")
+  tags            String?
+  status          String   @default("PUBLISHED") // "DRAFT" or "PUBLISHED"
+  createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-}
-
-model ContactEnquiry {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  phone     String
-  email     String?
-  message   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
 }

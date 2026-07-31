@@ -110,18 +110,26 @@ async function main() {
         update: {
           title,
           content: contentHtml,
+          excerpt: excerpt.substring(0, 300),
           featuredImage,
           metaTitle: title,
           metaDescription: metaDescription.substring(0, 300),
+          metaKeywords,
+          category,
         },
         create: {
           title,
           slug,
           content: contentHtml,
+          excerpt: excerpt.substring(0, 300),
           featuredImage,
           metaTitle: title,
           metaDescription: metaDescription.substring(0, 300),
-          isPublished: true,
+          metaKeywords,
+          author: "Dr. Asha Sushawat",
+          category,
+          tags: "IVF, Fertility, Jaipur, Kulki IVF",
+          status: "PUBLISHED",
         },
       });
       console.log(`Seeded blog post: ${slug} (${category})`);
