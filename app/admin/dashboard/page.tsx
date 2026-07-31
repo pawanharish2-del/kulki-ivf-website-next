@@ -1,21 +1,23 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { FileText, CheckCircle2, Clock, PlusCircle, ExternalLink, Activity, Sparkles } from "lucide-react";
+import { FileText, CheckCircle2, Clock, PlusCircle, Sparkles } from "lucide-react";
 import DashboardRecentTableClient from "@/components/admin/DashboardRecentTableClient";
 
-export const revalidate = 0; // Dynamic fetching in admin
+export const revalidate = 0;
 
 export default async function AdminDashboardPage() {
   let totalPosts = 0;
   let publishedPosts = 0;
   let draftPosts = 0;
   let recentPosts: any[] = [];
+  // pendingReviews removed as status field no longer exists
 
   try {
     totalPosts = await prisma.blogPost.count();
     publishedPosts = await prisma.blogPost.count({ where: { isPublished: true } });
     draftPosts = await prisma.blogPost.count({ where: { isPublished: false } });
+    // pendingReviews query removed
     recentPosts = await prisma.blogPost.findMany({
       orderBy: { updatedAt: "desc" },
       take: 5,
@@ -32,79 +34,66 @@ export default async function AdminDashboardPage() {
   }));
 
   const stats = [
-    { title: "Total Articles", value: totalPosts, icon: FileText, color: "text-[#c44d68] bg-[#fff0f3] border border-[#fde2e8]" },
-    { title: "Published Live", value: publishedPosts, icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50 border border-emerald-200" },
-    { title: "Drafts Pending", value: draftPosts, icon: Clock, color: "text-amber-600 bg-amber-50 border border-amber-200" },
-    { title: "CMS Status", value: "Optimal", icon: Activity, color: "text-blue-600 bg-blue-50 border border-blue-200" },
+    { title: "Total Articles", value: totalPosts, icon: FileText, color: "text-[#c44d68] bg-[#fff0f3]" },
+    { title: "Live Published", value: publishedPosts, icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50" },
+    { title: "Drafts", value: draftPosts, icon: Clock, color: "text-amber-600 bg-amber-50" },
   ];
 
   return (
     <div className="space-y-8 font-sans">
-      {/* Welcome Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-[#fde2e8]">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-[#802336] tracking-tight font-display">Executive Content Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-1 font-medium">
-            Manage medical articles, SEO content, and patient educational guides for Kulki IVF.
-          </p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Content Control Center</h1>
+          <p className="text-sm text-slate-500 mt-1">Manage articles, AI schema generation, and publication workflow.</p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/admin/blogs/create"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#e0667e] to-[#c44d68] hover:from-[#c44d68] hover:to-[#a83a52] text-white font-bold text-sm shadow-md shadow-[#c44d68]/25 hover:shadow-lg transition-all duration-300 shrink-0"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-all"
           >
             <PlusCircle className="w-4 h-4" />
-            Create New Article
-          </Link>
-          <Link
-            href="/blog"
-            target="_blank"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#fde2e8] hover:bg-[#fff0f3] text-[#802336] text-sm font-semibold shadow-sm transition-all"
-          >
-            <ExternalLink className="w-4 h-4 text-[#c44d68]" />
-            Live Blog
+            New Post
           </Link>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <div key={idx} className="bg-white p-6 rounded-2xl border border-[#fde2e8] shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${stat.color}`}>
-                <Icon className="w-6 h-6" />
+            <div key={idx} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${stat.color}`}>
+                <Icon className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider font-display">{stat.title}</p>
-                <h3 className="text-2xl font-extrabold text-[#802336] mt-0.5 font-display">{stat.value}</h3>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.title}</p>
+                <h3 className="text-xl font-bold text-slate-900">{stat.value}</h3>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* SEO & AEO Banner (Soft Blush Pink & Cream theme) */}
-      <div className="bg-[#fff0f3] border border-[#fde2e8] rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-[#c44d68] text-xs font-bold border border-[#fde2e8] shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#c44d68]" /> AEO & GEO Engine Active
+      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex gap-4">
+          <div className="mt-1 p-2 bg-white rounded-lg shadow-sm border border-indigo-100">
+            <Sparkles className="w-6 h-6 text-indigo-600" />
           </div>
-          <h3 className="text-lg font-bold font-display text-[#802336]">Generative Engine Optimization Enabled</h3>
-          <p className="text-sm text-[#802336]/80 max-w-2xl leading-relaxed font-medium">
-            All published blog posts automatically generate structured JSON-LD schemas and E-E-A-T key takeaway summaries to maximize visibility on Google AI Overviews, ChatGPT, and Perplexity.
-          </p>
+          <div>
+            <h3 className="text-md font-bold text-indigo-900">AI Optimization Engine</h3>
+            <p className="text-sm text-indigo-700/80 max-w-xl">
+              Automatic Schema markup, E-E-A-T analysis, and Key Takeaway generation are active for all published content.
+            </p>
+          </div>
         </div>
         <Link
-          href="/admin/blogs"
-          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#e0667e] to-[#c44d68] hover:from-[#c44d68] hover:to-[#a83a52] text-white font-bold text-sm shadow-md shadow-[#c44d68]/20 transition-all shrink-0"
+          href="/admin/settings"
+          className="px-4 py-2 bg-white text-indigo-600 text-sm font-bold rounded-lg border border-indigo-200 hover:bg-indigo-50 transition-colors"
         >
-          Manage SEO Content
+          Configure SEO
         </Link>
       </div>
 
-      {/* Recent Posts Table with Delete functionality */}
       <DashboardRecentTableClient initialPosts={formattedRecentPosts} />
     </div>
   );
