@@ -8,8 +8,7 @@ import { ArrowRight, Edit3, Trash2, AlertTriangle, Loader2 } from "lucide-react"
 interface Post {
   id: any;
   title: string;
-  category: string;
-  status: string;
+  isPublished: boolean;
   updatedAt: string;
 }
 
@@ -78,23 +77,23 @@ export default function DashboardRecentTableClient({ initialPosts }: { initialPo
                   </td>
                   <td className="py-4 px-6">
                     <span className="inline-block px-3 py-1 rounded-full bg-[#fff0f3] border border-[#fde2e8] text-[#802336] text-xs font-semibold">
-                      {post.category || "General"}
+                      General
                     </span>
                   </td>
                   <td className="py-4 px-6">
                     <span
                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
-                        post.status === "PUBLISHED"
+                        post.isPublished
                           ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           : "bg-amber-50 text-amber-700 border border-amber-200"
                       }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
-                          post.status === "PUBLISHED" ? "bg-emerald-500" : "bg-amber-500"
+                          post.isPublished ? "bg-emerald-500" : "bg-amber-500"
                         }`}
                       />
-                      {post.status}
+                      {post.isPublished ? "PUBLISHED" : "DRAFT"}
                     </span>
                   </td>
                   <td className="py-4 px-6 text-slate-500 text-xs font-medium">

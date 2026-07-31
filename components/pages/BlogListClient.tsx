@@ -8,9 +8,7 @@ interface Post {
   id: any;
   title: string;
   slug: string;
-  excerpt?: string | null;
   featuredImage?: string | null;
-  category?: string | null;
   createdAt: string | Date;
 }
 
@@ -20,15 +18,9 @@ interface BlogListProps {
 
 export default function BlogListClient({ posts }: BlogListProps) {
   const [search, setSearch] = useState("");
-  const [selectedCat, setSelectedCat] = useState("ALL");
-
-  const categories = ["ALL", "Clinic News", "Guide", "Treatment Cost", "Fertility Facts", "Preservation"];
 
   const filteredPosts = posts.filter((p) => {
-    const matchesSearch =
-      p.title.toLowerCase().includes(search.toLowerCase()) || (p.excerpt && p.excerpt.toLowerCase().includes(search.toLowerCase()));
-    const matchesCat = selectedCat === "ALL" || p.category === selectedCat;
-    return matchesSearch && matchesCat;
+    return p.title.toLowerCase().includes(search.toLowerCase());
   });
 
   return (
@@ -140,28 +132,7 @@ export default function BlogListClient({ posts }: BlogListProps) {
               borderRadius: "12px",
             }}
           >
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCat(cat)}
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: "20px",
-                    border: "none",
-                    background: selectedCat === cat ? "var(--plum)" : "var(--white)",
-                    color: selectedCat === cat ? "var(--white)" : "var(--ink)",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    boxShadow: "var(--shadow-sm)",
-                  }}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-            <div style={{ position: "relative", minWidth: "250px", flexGrow: 1, maxWidth: "400px" }}>
+            <div style={{ position: "relative", minWidth: "250px", flexGrow: 1 }}>
               <input
                 type="text"
                 placeholder="Search articles..."
@@ -198,14 +169,14 @@ export default function BlogListClient({ posts }: BlogListProps) {
                   <div className="blog-content">
                     <div className="blog-meta">
                       <span>
-                        <i className="fa-solid fa-tag"></i> {post.category || "Clinic News"}
+                        <i className="fa-solid fa-tag"></i> Clinic News
                       </span>
                     </div>
                     <h3 className="blog-title">
                       <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                     </h3>
                     <p className="blog-excerpt">
-                      {post.excerpt || "Read our comprehensive guide and medical insights on fertility treatments at Kulki IVF."}
+                      Read our comprehensive guide and medical insights on fertility treatments at Kulki IVF.
                     </p>
                     <Link href={`/blog/${post.slug}`} className="blog-link">
                       Read More <i className="fa-solid fa-arrow-right"></i>

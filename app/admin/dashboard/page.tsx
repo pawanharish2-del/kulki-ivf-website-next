@@ -14,8 +14,8 @@ export default async function AdminDashboardPage() {
 
   try {
     totalPosts = await prisma.blogPost.count();
-    publishedPosts = await prisma.blogPost.count({ where: { status: "PUBLISHED" } });
-    draftPosts = await prisma.blogPost.count({ where: { status: "DRAFT" } });
+    publishedPosts = await prisma.blogPost.count({ where: { isPublished: true } });
+    draftPosts = await prisma.blogPost.count({ where: { isPublished: false } });
     recentPosts = await prisma.blogPost.findMany({
       orderBy: { updatedAt: "desc" },
       take: 5,
@@ -27,8 +27,7 @@ export default async function AdminDashboardPage() {
   const formattedRecentPosts = recentPosts.map((p) => ({
     id: p.id,
     title: p.title,
-    category: p.category || "General",
-    status: p.status,
+    isPublished: p.isPublished,
     updatedAt: p.updatedAt.toISOString(),
   }));
 

@@ -59,15 +59,10 @@ export async function PUT(
       title,
       slug,
       content,
-      excerpt,
       featuredImage,
       metaTitle,
       metaDescription,
-      metaKeywords,
-      author,
-      category,
-      tags,
-      status,
+      isPublished,
     } = body;
 
     // Check if another post already has this slug
@@ -92,15 +87,10 @@ export async function PUT(
         title,
         slug,
         content,
-        excerpt,
         featuredImage,
         metaTitle,
         metaDescription,
-        metaKeywords,
-        author,
-        category,
-        tags,
-        status,
+        isPublished: isPublished === undefined ? true : Boolean(isPublished),
       },
     });
 

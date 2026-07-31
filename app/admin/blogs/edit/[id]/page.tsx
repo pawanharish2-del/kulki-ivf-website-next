@@ -33,15 +33,10 @@ export default async function EditBlogPage({ params }: Props) {
     title: post.title,
     slug: post.slug,
     content: post.content,
-    excerpt: post.excerpt || "",
     featuredImage: post.featuredImage || "/assets/images/blog1.webp",
     metaTitle: post.metaTitle || "",
     metaDescription: post.metaDescription || "",
-    metaKeywords: post.metaKeywords || "",
-    author: post.author,
-    category: post.category,
-    tags: post.tags || "",
-    status: post.status,
+    isPublished: post.isPublished,
   };
 
   return <BlogFormClient initialData={postData} isEdit={true} />;
