@@ -3,6 +3,7 @@ import "./globals.css";
 import LegacyInteractions from "@/components/layout/LegacyInteractions";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kulkiivfgroup.com"),
   title: "KULKI IVF Fertility & ART Centre | Jaipur",
   description:
     "Welcome to Kulki IVF Fertility & ART Center. Where Dreams of Parenthood Become Reality. Advanced fertility treatments in Jaipur.",
