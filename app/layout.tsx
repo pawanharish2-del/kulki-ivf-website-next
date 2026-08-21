@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description:
     "Welcome to Kulki IVF Fertility & ART Center. Where Dreams of Parenthood Become Reality. Advanced fertility treatments in Jaipur.",
   keywords: "IVF Jaipur, KULKI IVF, fertility clinic Jaipur, ICSI IUI Jaipur, best IVF centre Jaipur",
+  verification: {
+    google: "PrU-NuxbFD9fh6eE-UNE3DrO4YJJeJW57iYwH0ZqFUE",
+  },
   openGraph: {
     title: "KULKI IVF Fertility & ART Centre | Jaipur",
     description: "Advanced IVF, ICSI, IUI and fertility treatments in Jaipur.",
